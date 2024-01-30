@@ -50,10 +50,13 @@ jobs:
         run: pytest --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: Check result
+        if: steps.good.outcome != 'failure' || steps.bad.outcome != 'failure' || steps.all.outcome != 'failure'
         run: |
           echo ${{ steps.good.outcome }}
           echo ${{ steps.bad.outcome }}
           echo ${{ steps.all.outcome }}
+        env:
+          PASSED: true
       - name: Store allure results
         uses: actions/upload-artifact@v4
         with:
