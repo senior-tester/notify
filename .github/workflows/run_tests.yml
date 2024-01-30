@@ -93,10 +93,10 @@ jobs:
         if: needs.test.outputs.good != 'failure' && needs.test.outputs.bad != 'failure' && needs.test.outputs.all != 'failure'
         run: |
           echo "Test passed"
-          curl --location 'https://hooks.slack.com/services/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' --header 'Content-Type: application/json' --data '{"text": "Test Passed"}'
+          curl --location 'https://hooks.slack.com/services/${{ secrets.SLACK }}' --header 'Content-Type: application/json' --data '{"text": "Test Passed"}'
       - name: Failure
         if: needs.test.outputs.good == 'failure' || needs.test.outputs.bad == 'failure' || needs.test.outputs.all == 'failure'
         run: |
           echo "Test failed"
-          curl --location 'https://hooks.slack.com/services/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' --header 'Content-Type: application/json' --data '{"text": "Test Failed"}'
+          curl --location 'https://hooks.slack.com/services/${{ secrets.SLACK }}' --header 'Content-Type: application/json' --data '{"text": "Test Failed"}'
 #        run: echo $PASSED && echo $result && echo $RESULT
