@@ -40,15 +40,20 @@ jobs:
         run: pytest -m good --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: bad
+        id: bad
         if: "github.event.inputs.deployment_target == 'bad'"
         run: pytest -m bad --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: all
+        id: all
         if: "github.event.inputs.deployment_target == 'all'"
         run: pytest --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: Check result
-        run: echo ${{ steps.good.outcome }}
+        run: |
+          echo ${{ steps.good.outcome }}
+          echo ${{ steps.bad.outcome }}
+          echo ${{ steps.all.outcome }}
       - name: Store allure results
         uses: actions/upload-artifact@v4
         with:
