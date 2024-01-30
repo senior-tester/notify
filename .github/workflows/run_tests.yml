@@ -91,8 +91,12 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Success
         if: needs.test.outputs.good != 'failure' && needs.test.outputs.bad != 'failure' && needs.test.outputs.all != 'failure'
-        run: echo "Test passed"
+        run: |
+          echo "Test passed"
+          curl --location 'https://hooks.slack.com/services/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' --header 'Content-Type: application/json' --data '{"text": "Test Passed"}'
       - name: Failure
         if: needs.test.outputs.good == 'failure' || needs.test.outputs.bad == 'failure' || needs.test.outputs.all == 'failure'
-        run: echo "Test failed"
+        run: |
+          echo "Test failed"
+          curl --location 'https://hooks.slack.com/services/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' --header 'Content-Type: application/json' --data '{"text": "Test Failed"}'
 #        run: echo $PASSED && echo $result && echo $RESULT
