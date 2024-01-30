@@ -89,6 +89,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Get result
-        run: echo ${{ needs.test.outputs.good }} ${{ needs.test.outputs.bad }} ${{ needs.test.outputs.all }}
+      - name: Success
+        if: needs.test.outputs.good != 'failure' && needs.test.outputs.bad != 'failure' && needs.test.outputs.all != 'failure'
+        run: echo "Test passed"
+      - name: Failure
+        if: needs.test.outputs.good == 'failure' || needs.test.outputs.bad == 'failure' || needs.test.outputs.all == 'failure'
+        run: echo "Test failed"
 #        run: echo $PASSED && echo $result && echo $RESULT
