@@ -55,6 +55,7 @@ jobs:
           echo ${{ steps.good.outcome }}
           echo ${{ steps.bad.outcome }}
           echo ${{ steps.all.outcome }}
+          echo "result=passed" >> $GITHUB_ENV
         env:
           PASSED: true
           RESULT: passed
@@ -100,4 +101,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Get result
-        run: echo $PASSED && echo $RESULT
+        run: echo $PASSED && echo result && echo $RESULT
