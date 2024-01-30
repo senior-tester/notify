@@ -57,6 +57,7 @@ jobs:
           echo ${{ steps.all.outcome }}
         env:
           PASSED: true
+          RESULT: passed
       - name: Store allure results
         uses: actions/upload-artifact@v4
         with:
@@ -99,4 +100,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Get result
-        run: echo $PASSED
+        run: echo $PASSED && echo $RESULT
