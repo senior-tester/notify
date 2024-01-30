@@ -36,15 +36,15 @@ jobs:
         run: pip install -r requirements.txt
       - name: good
         if: "github.event.inputs.deployment_target == 'good'"
-        run: pytest -m good --alluredir=allure-results && PASSED=true
+        run: pytest -m good --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: bad
         if: "github.event.inputs.deployment_target == 'bad'"
-        run: pytest -m bad --alluredir=allure-results && PASSED=true
+        run: pytest -m bad --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: all
         if: "github.event.inputs.deployment_target == 'all'"
-        run: pytest --alluredir=allure-results && PASSED=true
+        run: pytest --alluredir=allure-results && export PASSED=true
         continue-on-error: true
       - name: Store allure results
         uses: actions/upload-artifact@v4
