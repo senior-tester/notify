@@ -13,8 +13,6 @@ on:
           - bad
           - all
 
-env:
-  PASSED: false
 
 permissions:
   contents: read
@@ -24,10 +22,6 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    outputs:
-      good: ${{ steps.good.outcome }}
-      bad: ${{ steps.bad.outcome }}
-      all: ${{ steps.all.outcome }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,28 +34,18 @@ jobs:
       - name: good
         id: good
         if: "github.event.inputs.deployment_target == 'good'"
-        run: pytest -m good --alluredir=allure-results && export PASSED=true
+        run: pytest -m good --alluredir=allure-results
         continue-on-error: true
       - name: bad
         id: bad
         if: "github.event.inputs.deployment_target == 'bad'"
-        run: pytest -m bad --alluredir=allure-results && export PASSED=true
+        run: pytest -m bad --alluredir=allure-results
         continue-on-error: true
       - name: all
         id: all
         if: "github.event.inputs.deployment_target == 'all'"
-        run: pytest --alluredir=allure-results && export PASSED=true
+        run: pytest --alluredir=allure-results
         continue-on-error: true
-      - name: Check result
-        if: steps.good.outcome != 'failure' || steps.bad.outcome != 'failure' || steps.all.outcome != 'failure'
-        run: |
-          echo ${{ steps.good.outcome }}
-          echo ${{ steps.bad.outcome }}
-          echo ${{ steps.all.outcome }}
-          echo "result=passed" >> $GITHUB_ENV
-        env:
-          PASSED: true
-          RESULT: passed
       - uses: actions/setup-java@v4
         with:
           distribution: 'microsoft' # See 'Supported distributions' for available options
@@ -89,14 +73,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Success
-        if: needs.test.outputs.good != 'failure' && needs.test.outputs.bad != 'failure' && needs.test.outputs.all != 'failure'
-        run: |
-          echo "Test passed"
-          curl --location 'https://hooks.slack.com/services/${{ secrets.SLACK }}' --header 'Content-Type: application/json' --data '{"text": "Test Passed"}'
-      - name: Failure
-        if: needs.test.outputs.good == 'failure' || needs.test.outputs.bad == 'failure' || needs.test.outputs.all == 'failure'
-        run: |
-          echo "Test failed"
-          curl --location 'https://hooks.slack.com/services/${{ secrets.SLACK }}' --header 'Content-Type: application/json' --data '{"text": "Test Failed"}'
-#        run: echo $PASSED && echo $result && echo $RESULT
