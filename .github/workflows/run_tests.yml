@@ -81,9 +81,9 @@ jobs:
         if: needs.test.outputs.good != 'failure' && needs.test.outputs.bad != 'failure' && needs.test.outputs.all != 'failure'
         run: |
           curl --location 'https://hooks.slack.com/services/${{ secrets.st_slack }}' --header 'Content-Type: application/json' --data '{"text": ":white_check_mark: Testing finished. Report is here: https://senior-tester.github.io/notify/"}'
-          curl --location 'https://api.telegram.org/bot%{{ secrets.TG }}/sendMessage' --header 'Content-Type: application/json' --data '{"chat_id": 6144359989, "text": "Tests passed. Report: https://senior-tester.github.io/notify/"}'
+          curl --location 'https://api.telegram.org/bot${{ secrets.TG }}/sendMessage' --header 'Content-Type: application/json' --data '{"chat_id": 6144359989, "text": "Tests passed. Report: https://senior-tester.github.io/notify/"}'
       - name: failure
         if: needs.test.outputs.good == 'failure' || needs.test.outputs.bad == 'failure' || needs.test.outputs.all == 'failure'
         run: |
           curl --location 'https://hooks.slack.com/services/${{ secrets.st_slack }}' --header 'Content-Type: application/json' --data '{"text": ":rage: Testing finished. Report is here: https://senior-tester.github.io/notify/"}'
-          curl --location 'https://api.telegram.org/bot%{{ secrets.TG }}/sendMessage' --header 'Content-Type: application/json' --data '{"chat_id": 6144359989, "text": "Tests FAILED. Report: https://senior-tester.github.io/notify/"}'
+          curl --location 'https://api.telegram.org/bot${{ secrets.TG }}/sendMessage' --header 'Content-Type: application/json' --data '{"chat_id": 6144359989, "text": "Tests FAILED. Report: https://senior-tester.github.io/notify/"}'
