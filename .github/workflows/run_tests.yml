@@ -22,6 +22,10 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      good: ${{ steps.good.outcome }}
+      bad: ${{ steps.bad.outcome }}
+      all: ${{ steps.all.outcome }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,6 +77,11 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: send notification
+      - name: success
+        if: needs.test.outputs.good != 'failure' && needs.test.outputs.bad != 'failure' && needs.test.outputs.all != 'failure'
         run: |
           curl --location 'https://hooks.slack.com/services/${{ secrets.st_slack }}' --header 'Content-Type: application/json' --data '{"text": ":white_check_mark: Testing finished. Report is here: https://senior-tester.github.io/notify/"}'
+      - name: failure
+        if: needs.test.outputs.good == 'failure' || needs.test.outputs.bad == 'failure' || needs.test.outputs.all == 'failure'
+        run: |
+          curl --location 'https://hooks.slack.com/services/${{ secrets.st_slack }}' --header 'Content-Type: application/json' --data '{"text": ":rage: Testing finished. Report is here: https://senior-tester.github.io/notify/"}'
